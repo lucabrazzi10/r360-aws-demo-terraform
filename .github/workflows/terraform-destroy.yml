@@ -15,9 +15,18 @@ permissions:
 jobs:
   destroy:
     runs-on: ubuntu-latest
+
+    env:
+      TF_WORKING_DIR: envs/primary
+      TF_VAR_aws_region: ${{ secrets.TF_VAR_aws_region }}
+      TF_VAR_name_prefix: ${{ secrets.TF_VAR_name_prefix }}
+      TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+      TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
+      TF_VAR_app_instance_profile: ${{ secrets.TF_VAR_app_instance_profile }}
+
     defaults:
       run:
-        working-directory: envs/primary
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
     steps:
       - name: Block unless confirmed
@@ -38,7 +47,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::A132672187356:role/github-actions-terraform-r360
+          role-to-assume: arn:aws:iam::132672187356:role/github-actions-terraform-r360
           aws-region: us-east-1
 
       - name: Terraform init
